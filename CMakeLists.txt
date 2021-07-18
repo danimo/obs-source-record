@@ -1,7 +1,13 @@
+cmake_minimum_required(VERSION 3.18)
 project(source-record VERSION 0.2.2)
 set(PROJECT_FULL_NAME "Source Record")
 
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/version.h)
+
+find_package (LibObs REQUIRED)
 
 if(MSVC)
 	set(source-record_PLATFORM_DEPS
@@ -28,13 +34,35 @@ if(WIN32)
 		source-record.rc)
 endif()
 
+#include_directories("${LIBOBS_INCLUDE_DIR}/obs-frontend-api")
+
 add_library(source-record MODULE
 	${source-record_HEADERS}
 	${source-record_SOURCES})
+target_include_directories(source-record PUBLIC ${source-record_INCLUDES})
 target_link_libraries(source-record
 	obs-frontend-api
 	libobs
 	${source-record_PLATFORM_DEPS})
 
-set_target_properties(source-record PROPERTIES FOLDER "plugins/exeldro")
-install_obs_plugin_with_data(source-record data)
+if(UNIX AND NOT APPLE)
+	include(GNUInstallDirs)
+
+	file(GLOB locale_files data/locale/*.ini)
+
+        set(CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS
+		OWNER_READ OWNER_WRITE OWNER_EXECUTE
+		GROUP_READ GROUP_WRITE GROUP_EXECUTE
+		WORLD_READ WORLD_EXECUTE
+	)
+
+	install(TARGETS source-record LIBRARY
+		DESTINATION "${LIBOBS_PLUGIN_DESTINATION}"
+		PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+
+	install(FILES ${locale_files}
+		DESTINATION "${LIBOBS_PLUGIN_DATA_DESTINATION}/obs-source-record/locale")
+endif()
+
+#set_target_properties(source-record PROPERTIES FOLDER "plugins/exeldro")
+#install_obs_plugin_with_data(source-record data)

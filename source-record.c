@@ -1,5 +1,5 @@
 #include <obs-module.h>
-#include <../UI/obs-frontend-api/obs-frontend-api.h>
+#include <obs-frontend-api.h>
 #include <util/config-file.h>
 #include <util/platform.h>
 #include <util/threading.h>
