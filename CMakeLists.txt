@@ -5,7 +5,7 @@ set(PROJECT_FULL_NAME "Source Record")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/version.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 find_package (LibObs REQUIRED)
 
